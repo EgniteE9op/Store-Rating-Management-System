@@ -1,25 +1,28 @@
-
 import { Routes, Route } from "react-router-dom";
 
+// Public Pages
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
-import Stores from "./pages/Stores";
-import Profile from "./pages/Profile";
-import Rating from "./pages/Rating";
 import NotFound from "./pages/NotFound";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+// Protected Pages
+import Dashboard from "./pages/Dashboard";
+import Stores from "./pages/Stores";
 import StoreDetails from "./pages/StoreDetails";
+import Rating from "./pages/Rating";
+import Profile from "./pages/Profile";
 import MyRatings from "./pages/MyRatings";
+
+// Components
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Routes>
 
-      {/* =========================
+      {/* ==========================
           Public Routes
-      ========================== */}
+      =========================== */}
 
       <Route
         path="/"
@@ -36,9 +39,9 @@ function App() {
         element={<Signup />}
       />
 
-      {/* =========================
+      {/* ==========================
           Protected Routes
-      ========================== */}
+      =========================== */}
 
       <Route
         path="/dashboard"
@@ -59,19 +62,10 @@ function App() {
       />
 
       <Route
-  path="/my-ratings"
-  element={
-    <ProtectedRoute>
-      <MyRatings />
-    </ProtectedRoute>
-  }
-/>
-
-      <Route
-        path="/profile"
+        path="/stores/:id"
         element={
           <ProtectedRoute>
-            <Profile />
+            <StoreDetails />
           </ProtectedRoute>
         }
       />
@@ -85,23 +79,32 @@ function App() {
         }
       />
 
-      {/* =========================
-          404 Page
-      ========================== */}
+      <Route
+        path="/my-ratings"
+        element={
+          <ProtectedRoute>
+            <MyRatings />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ==========================
+          404 - Page Not Found
+      =========================== */}
 
       <Route
         path="*"
         element={<NotFound />}
       />
-
-      <Route
-  path="/stores/:id"
-  element={
-    <ProtectedRoute>
-      <StoreDetails />
-    </ProtectedRoute>
-  }
-/>
 
     </Routes>
   );

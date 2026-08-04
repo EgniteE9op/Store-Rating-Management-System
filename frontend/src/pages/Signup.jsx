@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
 function Signup() {
   const navigate = useNavigate();
 
@@ -10,67 +11,100 @@ function Signup() {
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
-      const response = await api.post(
-        "/auth/signup",
-        {
-          name,
-          email,
-          address,
-          password,
-        }
+      const response = await api.post("/auth/signup", {
+        name,
+        email,
+        address,
+        password,
+      });
+
+      toast.success(
+        response.data.message || "Account Created Successfully 🎉"
       );
 
-     toast.success(response.data.message);
-
-      // Clear the form
       setName("");
       setEmail("");
       setAddress("");
       setPassword("");
 
-      // Redirect to Login page
       navigate("/login");
+
     } catch (error) {
+
       console.error(error);
 
-      if (error.response) {
-        toast.success(response.data.message);
-      } else {
-       toast.error("Something went wrong");
-      }
+      toast.error(
+        error.response?.data?.message ||
+          "Something went wrong"
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-100 via-white to-blue-100 flex items-center justify-center px-4">
+
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
+
+        {/* Logo */}
+
+        <div className="flex justify-center mb-5">
+
+          <div className="w-20 h-20 rounded-full bg-green-600 flex items-center justify-center text-4xl text-white shadow-lg">
+            🏪
+          </div>
+
+        </div>
+
+        {/* Heading */}
+
+        <h1 className="text-3xl font-bold text-center text-gray-800">
           Create Account
         </h1>
 
-        <form onSubmit={handleSignup}>
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">
+        <p className="text-center text-gray-500 mt-2 mb-8">
+          Join the Store Rating Management System
+        </p>
+
+        {/* Form */}
+
+        <form
+          onSubmit={handleSignup}
+          className="space-y-5"
+        >
+
+          <div>
+
+            <label className="block font-medium mb-2">
               Full Name
             </label>
 
             <input
-              name=""
               type="text"
               placeholder="Enter your full name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
             />
+
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">
+          <div>
+
+            <label className="block font-medium mb-2">
               Email
             </label>
 
@@ -78,14 +112,16 @@ function Signup() {
               type="email"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
             />
+
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">
+          <div>
+
+            <label className="block font-medium mb-2">
               Address
             </label>
 
@@ -93,45 +129,55 @@ function Signup() {
               type="text"
               placeholder="Enter your address"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
             />
+
           </div>
 
-          <div className="mb-6">
-            <label className="block mb-2 font-medium">
+          <div>
+
+            <label className="block font-medium mb-2">
               Password
             </label>
 
             <input
               type="password"
-              placeholder="Enter your password"
+              placeholder="Create a password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
             />
+
           </div>
 
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"
+            disabled={loading}
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 disabled:bg-green-400 disabled:cursor-not-allowed"
           >
-            Create Account
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
+
         </form>
 
-        <p className="text-center mt-6">
-          Already have an account?{" "}
+        <p className="text-center mt-8 text-gray-600">
+
+          Already have an account?
+
           <Link
             to="/login"
-            className="text-blue-600 font-semibold hover:underline"
+            className="ml-2 text-blue-600 font-semibold hover:underline"
           >
             Login
           </Link>
+
         </p>
+
       </div>
+
     </div>
   );
 }
